@@ -1,0 +1,47 @@
+def main():
+    try:
+        # Create a clinician
+        print("Creating clinician...")
+        clinician = Clinician("C123", "Psychology")
+        print(f"Clinician created with ID: {clinician.clinicianId}")
+        # Create a patient profile
+        print("\nCreating patient profile...")
+        patient = PatientProfile("P456", "John Doe")
+        print(f"Patient profile created for: {patient.name}")  
+        # Create and upload media
+        print("\nCreating user and uploading media...")
+        user = User("U789", {"role": "therapist"})
+        # Simulate video content
+        video_content = b"sample_video_content"
+        media = Media("M101", MediaType.VIDEO, video_content)
+        upload_success = user.uploadMedia(media)
+        print(f"Media upload {'successful' if upload_success else 'failed'}")
+        # Perform emotion analysis
+        print("\nPerforming emotion analysis...")
+        analysis = EmotionAnalysis("A202", media.mediaId)
+        analysis.emotions = {
+            "happy": 0.8,
+            "neutral": 0.15,
+            "sad": 0.05
+        }
+        analysis_success = analysis.analyzeEmotions()
+        print("Analysis results:", analysis.getResults())
+        # Add analysis to patient profile
+        print("\nAdding analysis to patient profile...")
+        analysis_record = Analysis(
+            timestamp=datetime.now(),
+            results=analysis.getResults(),
+            analyst=clinician.clinicianId
+        )
+        profile_update = patient.addAnalysis(analysis_record)
+        print(f"Profile update {'successful' if profile_update else 'failed'}")
+        # Generate report
+        print("\nGenerating patient report...")
+        report = clinician.generateReport(patient.patientId)
+        report_data = report.export(ReportFormat.PDF)
+        print(f"Report generated with ID: {report.reportId}")
+        print("\nDemo completed successfully!")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+if __name__ == "__main__":
+    main()
